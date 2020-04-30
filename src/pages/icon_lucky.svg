@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="17.116" height="16" viewBox="0 0 17.116 16">
+  <g id="Component_29_2" data-name="Component 29 – 2" transform="translate(0.5 0.5)">
+    <g id="Group_283" data-name="Group 283" transform="translate(-121 -559)">
+      <path id="bets" d="M6.073,23.818H1.436A1.46,1.46,0,0,1,0,22.338v-4.78a1.46,1.46,0,0,1,1.436-1.48H6.073a1.46,1.46,0,0,1,1.436,1.48v4.78A1.46,1.46,0,0,1,6.073,23.818ZM1.436,16.5A1.043,1.043,0,0,0,.41,17.558v4.78A1.043,1.043,0,0,0,1.436,23.4H6.073A1.043,1.043,0,0,0,7.1,22.338v-4.78A1.043,1.043,0,0,0,6.073,16.5H1.436Zm9.849,2.037A1.405,1.405,0,0,1,10.27,18.1l-.5-.52-2.775-2.86a1.515,1.515,0,0,1,0-2.094l3.279-3.38a1.406,1.406,0,0,1,2.031,0l3.279,3.38a1.515,1.515,0,0,1,0,2.094L12.3,18.1A1.406,1.406,0,0,1,11.286,18.538Zm0-9.3a1,1,0,0,0-.725.31L7.281,12.93a1.082,1.082,0,0,0,0,1.5l3.279,3.38a1,1,0,0,0,1.451,0l3.279-3.38a1.082,1.082,0,0,0,0-1.5l-3.279-3.38A1,1,0,0,0,11.286,9.241Zm0,4.123a.3.3,0,0,0-.216.092.322.322,0,0,0,0,.445.306.306,0,0,0,.431,0,.321.321,0,0,0,0-.445A.3.3,0,0,0,11.286,13.364Zm2.749-.031a.3.3,0,0,0-.216.092.322.322,0,0,0,0,.445.306.306,0,0,0,.431,0,.322.322,0,0,0,0-.445A.3.3,0,0,0,14.035,13.332ZM8.59,13.245h0l-.216.092h0l-.085.17.085.275a.306.306,0,0,0,.431,0,.322.322,0,0,0,0-.445A.3.3,0,0,0,8.59,13.245Z" transform="translate(121 550.182)" fill="none" stroke="#333" stroke-width="1"/>
+      <circle id="Ellipse_21" data-name="Ellipse 21" cx="1" cy="1" r="1" transform="translate(123.755 569)" fill="#333"/>
+      <path id="Path_275" data-name="Path 275" d="M-2936.18-2167.735" transform="translate(3066 2732)" fill="none" stroke="#707070" stroke-width="1"/>
+      <g id="Ellipse_22" data-name="Ellipse 22" transform="translate(129 563)" fill="#fff" stroke="#333" stroke-width="1">
+        <circle cx="0.5" cy="0.5" r="0.5" stroke="none"/>
+        <circle cx="0.5" cy="0.5" fill="none"/>
+      </g>
+      <g id="Ellipse_23" data-name="Ellipse 23" transform="translate(132 563.32)" fill="#fff" stroke="#333" stroke-width="1">
+        <circle cx="0.5" cy="0.5" r="0.5" stroke="none"/>
+        <circle cx="0.5" cy="0.5" fill="none"/>
+      </g>
+      <g id="Ellipse_24" data-name="Ellipse 24" transform="translate(134.32 563.32)" fill="#fff" stroke="#333" stroke-width="1">
+        <circle cx="0.5" cy="0.5" r="0.5" stroke="none"/>
+        <circle cx="0.5" cy="0.5" fill="none"/>
+      </g>
+    </g>
+  </g>
+</svg>

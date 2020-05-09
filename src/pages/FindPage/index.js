@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import firebase from 'firebase';
 import styled from 'styled-components';
+import { Redirect } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import FavoriteIcon from '@material-ui/icons/Favorite';
@@ -75,16 +77,32 @@ const StyledCardDetail = styled.div`
   }
 
 ` 
-export const FindPage = () => {
+export const FindPage = ({ userKey }) => {
+  const [filter, setFilter] = useState('hot');
+  const [forms, setForms] = useState([]);
+  useEffect(() => {
+    firebase.database().ref('/forms').once('value').then((snapshot) => {
+      if (snapshot.val()) {
+        let formTmp = [];
+        for (let [key, value] of Object.entries(snapshot.val())) {
+          formTmp.push({...value, key: key})
+        }
+        setForms(formTmp);
+      }
+    })
+  }, [])
+  if (userKey === undefined) {
+    return <Redirect to="/login" />;
+  }
   return (
     <StyledWrapper>
       <StyledButtonGroup>
-        <StyledButton selected>最熱門</StyledButton>
-        <StyledButton>最適合你</StyledButton>
+        <StyledButton selected={filter === 'hot'} onClick={() => setFilter('hot')}>最熱門</StyledButton>
+        <StyledButton selected={filter === 'match'} onClick={() => setFilter('match')}>最適合你</StyledButton>
       </StyledButtonGroup>
       <StyledCardWrapper>
         {
-          Array.from(Array(10)).map((card, index) => (
+          forms.map((card, index) => (
             <StyledCard key={index}>
               <div className="img"></div>
               <div className="card-body">

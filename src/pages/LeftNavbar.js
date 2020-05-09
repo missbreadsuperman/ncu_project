@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import SVGProfile from './icon_profile.svg';
 import SVGFind from './icon_find.svg';
@@ -18,14 +18,16 @@ const StyledLeftPanel = styled.div`
   align-items: center;
 `
 const StyledProfile = styled.div`
-  width: 100px;
-  height: 100px;
+  width: 120px;
+  height: 120px;
   background-color: #fff;
   border-radius: 50%;
+  margin-bottom: 60px;
   img {
     display: block;
     margin: 20px auto;
-    width: 60px;
+    width: 80px;
+    border-radius: 50%;
   }
 `
 const StyledUserDetail = styled.div`
@@ -94,8 +96,8 @@ const StyledNavbar = styled(NavLink)`
   }
 `
 const StyledAboutWrapper = styled.div`
-  width: 205px;
-  height: 257px;
+  width: 200px;
+  height: 250px;
   border-radius: 10px;
   border: solid 1px #dea654;
   background-color: #ffffff;
@@ -111,18 +113,18 @@ const StyledAboutWrapper = styled.div`
     color: #333;
   }
   img {
-    margin: 21px 0 35px 0;
+    margin: 20px 0;
   }
 `
 const StyledButton = styled(Button)`
-  width: 100px;
-  height: 35px;
+  width: 110px;
+  height: 45px;
   background-color: rgb(222, 166, 84, 0.6) !important;
   border: 0 !important;
   border-radius: 20px;
   .p-button-text {
     color: #333;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: bold;
   }
   &:hover {
@@ -131,7 +133,7 @@ const StyledButton = styled(Button)`
 `
 const navbarItems = [
   {
-    text: '找問卷', icon: SVGFind, url: '/find',
+    text: '找問卷', icon: SVGFind, url: '/',
   },
   {
     text: '上架問卷', icon: SVGUpload, url: '/upload',
@@ -143,16 +145,16 @@ const navbarItems = [
     text: '幸運轉盤', icon: SVGLucky, url: '/lucky',
   },
 ]
-export const LeftNavbar = () => {
-  const [userProfile, setUserProfile] = useState(null)
+export const LeftNavbar = ({ userProfile }) => {
+  const history = useHistory();
   return (
     <StyledLeftPanel>
       <StyledProfile>
         {
-          userProfile === null ? <img src={SVGProfile} /> : <div>img</div>
+          userProfile === null ? <img src={SVGProfile} /> : <img src={userProfile} />
         }
       </StyledProfile>
-      <StyledUserDetail>
+      {/* <StyledUserDetail>
         <div>
           <div className="label">現有點數</div>
           <div className="value">20</div>
@@ -165,11 +167,11 @@ export const LeftNavbar = () => {
           <div className="label">上架中問卷</div>
           <div className="value">20</div>
         </div>
-      </StyledUserDetail>
+      </StyledUserDetail> */}
       <div>
         {
           navbarItems.map((item,index) => (
-            <StyledNavbar key={index} to={item.url} activeClassName="selected" lastItem={index === navbarItems.length-1}>
+            <StyledNavbar key={index} exact={index === 0} to={item.url} activeClassName="selected" lastItem={index === navbarItems.length-1}>
               <img src={item.icon} />
               <div>{item.text}</div>
             </StyledNavbar>
@@ -179,8 +181,7 @@ export const LeftNavbar = () => {
       <StyledAboutWrapper>
         <div className="title">關於我們</div>
         <img src={SVGTeam} />
-        <StyledButton label="團隊介紹 →" className="p-button-rounded" />
-
+        <StyledButton label="團隊介紹 →" className="p-button-rounded" onClick={() => history.push('/about')}/>
       </StyledAboutWrapper>
     </StyledLeftPanel>
   )

@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import update from 'immutability-helper';
 import styled from 'styled-components';
+import firebase from 'firebase';
+import { useHistory } from 'react-router-dom';
 import { InputText } from 'primereact/inputtext';
 import { RadioButton } from 'primereact/radiobutton';
 import { InputNumber } from 'primereact/inputnumber';
@@ -106,6 +109,20 @@ const interestItems = [
   {label: '運動', value: 'sports'},
   {label: '旅遊', value: 'travel'},
   {label: '音樂', value: 'music'},
+  {label: '3C', value: 'ccc'},
+  {label: '時尚', value: 'fashion'},
+  {label: '遊戲', value: 'game'},
+  {label: '文學', value: 'literature'},
+  {label: '時事', value: 'news'},
+  {label: '美食', value: 'food'},
+  {label: '攝影', value: 'photography'},
+  {label: '星座', value: 'star'},
+  {label: '投資', value: 'invest'},
+  {label: '電影', value: 'movie'},
+  {label: '美妝', value: 'cosmetic'},
+  {label: '汽車', value: 'car'},
+  {label: '科技', value: 'technology'},
+  {label: '網購', value: 'eShopping'},
   {label: '其他', value: 'other'},
 ];
 const jobItems = [
@@ -125,73 +142,98 @@ const tenureItems = [
   {label: '10年以上', value: 'over10'},
 ];
 const salaryItems = [
-  {label: '50萬', value: 'below500k'},
+  {label: '50萬以下', value: 'below500k'},
   {label: '50萬～1百萬', value: 'below1m'},
   {label: '1百萬以上', value: 'over1m'},
 ];
 
+const initInfo = {
+  name: '',
+  gender: 'male',
+  age: 20,
+  education: null,
+  marriage: null,
+  interest: [],
+  job: null,
+  tenure: null,
+  salary: null,
+}
 
-export const LoginForm = () => {
-  const [gender, setGender] = useState('male');
-  const [age, setAge] = useState(20);
-  const [education, setEducation] = useState();
-  const [marriage, setMarriage] = useState();
-  const [interest, setInterest] = useState([]);
-  const [job, setJob] = useState([]);
-  const [tenure, setTenure] = useState([]);
-  const [salary, setSalary] = useState([]);
+export const LoginForm = ({ userID = '2994711603897571', userKey, setUserKey }) => {
+  const history = useHistory();
+  const [info, setInfo] = useState(initInfo);
+  const usersRef = firebase.database().ref('/users');
+  useEffect(() => {
+    usersRef.orderByValue().on('value', function(snapshot) {
+      snapshot.forEach(function(data) {
+        if (data.val().userID === userID) {
+          setUserKey(data.key);
+        }
+      });
+    })
+  }, [userID])
+  const setInfoItem = (item, value) => {
+    setInfo(update(info, {[item]: {$set: value}}));
+  }
+  const handleInfoSubmit = () => {
+    if (userKey) firebase.database().ref('/users/'+ userKey + '/settings').set({
+      ...info,
+      points: 0,
+    });
+    history.push('/');
+  }
   return (
     <div>
       <StyledForm>
         <StyledLabel>用戶名</StyledLabel>
-        <StyledInput value={'name'} onChange={(e) => console.log({value: e.target.value})} />
+        <StyledInput value={info.name} onChange={e => setInfoItem('name', e.target.value)} />
       </StyledForm>
       <StyledFormRow>
         <StyledForm marginRight={35}>
           <StyledLabel>性別</StyledLabel>
           <StyledRadioGroup>
-            <RadioButton value="male" name="gender" onChange={(e) => setGender(e.value)} checked={gender === 'male'} />
+            <RadioButton value="male" name="gender" onChange={e => setInfoItem('gender', e.value)} checked={info.gender === 'male'} />
             <label>男</label>
-            <RadioButton value="female" name="gender" onChange={(e) => setGender(e.value)} checked={gender === 'female'} />
+            <RadioButton value="female" name="gender" onChange={e => setInfoItem('gender', e.value)} checked={info.gender === 'female'} />
             <label>女</label>
           </StyledRadioGroup>
         </StyledForm>
         <StyledForm>
           <StyledLabel>年齡</StyledLabel>
-          <StyledInputNumber value={age} onChange={(e) => setAge(e.value)} mode="decimal" min={0} max={100} />
+          <StyledInputNumber value={info.age} onChange={e => setInfoItem('age', e.value)} mode="decimal" min={0} max={100} />
         </StyledForm>
       </StyledFormRow>
       <StyledFormRow>
         <StyledForm marginRight={35}>
           <StyledLabel>教育程度</StyledLabel>
-          <StyledDropdown value={education} options={educationItems} onChange={(e) => setEducation(e.value)} />
+          <StyledDropdown value={info.education} options={educationItems} onChange={e => setInfoItem('education', e.value)} />
         </StyledForm>
         <StyledForm>
           <StyledLabel>婚姻</StyledLabel>
-          <StyledDropdown value={marriage} options={marriageItems} onChange={(e) => setMarriage(e.value)} />
+          <StyledDropdown value={info.marriage} options={marriageItems} onChange={e => setInfoItem('marriage', e.value)} />
         </StyledForm>
       </StyledFormRow>
       <StyledFormRow>
         <StyledForm marginRight={35}>
           <StyledLabel>職業</StyledLabel>
-          <StyledDropdown value={job} options={jobItems} onChange={(e) => setJob(e.value)} />
+          <StyledDropdown value={info.job} options={jobItems} onChange={e => setInfoItem('job', e.value)} />
         </StyledForm>
       </StyledFormRow>
       <StyledFormRow>
         <StyledForm marginRight={35}>
           <StyledLabel>工作年資</StyledLabel>
-          <StyledDropdown value={tenure} options={tenureItems} onChange={(e) => setTenure(e.value)} />
+          <StyledDropdown value={info.tenure} options={tenureItems} onChange={e => setInfoItem('tenure', e.value)} />
         </StyledForm>
         <StyledForm>
           <StyledLabel>工作年薪</StyledLabel>
-          <StyledDropdown value={salary} options={salaryItems} onChange={(e) => setSalary(e.value)} />
+          <StyledDropdown value={info.salary} options={salaryItems} onChange={e => setInfoItem('salary', e.value)}/>
         </StyledForm>
       </StyledFormRow>
       <StyledForm>
         <StyledLabel>興趣</StyledLabel>
-        <StyledMultiSelect value={interest} options={interestItems} onChange={(e) => setInterest(e.value)} />
+        <StyledMultiSelect value={info.interest} options={interestItems} onChange={e => setInfoItem('interest', e.value)} />
       </StyledForm>
-      <StyledButton label="送出" className="p-button-rounded" />
+      <StyledButton label="送出" className="p-button-rounded" onClick={handleInfoSubmit}/>
     </div>
   )
 }

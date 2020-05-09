@@ -1,15 +1,19 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import {
+  Redirect,
   BrowserRouter as Router,
   Switch,
   Route,
 } from 'react-router-dom';
+import firebase from 'firebase';
 import { FindPage } from './FindPage';
 import { LoginPage } from './LoginPage';
 import { LeftNavbar } from './LeftNavbar';
 import { UploadPage } from './UploadPage';
 import { SettingsPage } from './SettingsPage';
+import { AboutPage } from './AboutPage';
+import { LuckyPage } from './LuckyPage';
 
 const StyledWrapper = styled.div`
   display: grid;
@@ -17,26 +21,60 @@ const StyledWrapper = styled.div`
   grid-template-rows: 100vh;
 `
 
-export const HomePage = () => 
-{
+export const HomePage = () => {
+  const [userKey, setUserKey] = useState();
+  const [users, setUsers] = useState([]);
+  const [user, setUser] = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
+
+  useEffect(() => {
+    firebase.database().ref('/users').once('value').then((snapshot) => {
+      if (snapshot.val()) setUsers(Object.values(snapshot.val()));
+    });
+  }, [userKey]);
+  function PrivateRoute({ children, ...rest }) {
+    return (
+      <Route
+        {...rest}
+        render={({ location }) =>
+          user !== null && user.settings !== null ? (
+            children
+          ) : (
+            <Redirect
+              to={{
+                pathname: "/login",
+                state: { from: location }
+              }}
+            />
+          )
+        }
+      />
+    );
+  }
+
   return (
     <Router>
-     
       <Switch>
-        <Route path="/login">
-          <LoginPage />
-        </Route>
+         <Route path="/login">
+           <LoginPage userKey={userKey} setUserKey={setUserKey} users={users} setUsers={setUsers} user={user} setUser={setUser} setUserProfile={setUserProfile}/>
+         </Route>
         <StyledWrapper>
-          <LeftNavbar />
-          <Route path="/find">
-            <FindPage />
-          </Route>
-          <Route path="/upload">
-            <UploadPage />
-          </Route>
-          <Route path="/settings">
-            <SettingsPage />
-          </Route>
+          <LeftNavbar userProfile={userProfile}/>
+          <PrivateRoute exact path="/">
+            <FindPage userKey={userKey} />
+          </PrivateRoute>
+          <PrivateRoute path="/upload">
+            <UploadPage userKey={userKey} />
+          </PrivateRoute>
+          <PrivateRoute path="/settings">
+            <SettingsPage userKey={userKey} />
+          </PrivateRoute>
+          <PrivateRoute path="/about">
+            <AboutPage userKey={userKey} />
+          </PrivateRoute>
+          <PrivateRoute path="/lucky">
+            <LuckyPage />
+          </PrivateRoute>
         </StyledWrapper>
       </Switch>
       

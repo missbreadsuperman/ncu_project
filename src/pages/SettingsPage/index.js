@@ -22,7 +22,7 @@ const StyledButton = styled(Button)`
   border: solid 2px #dea654 !important;
 `
 
-export const SettingsPage = () => { 
+export const SettingsPage = ({ userKey }) => { 
   const [displaySelected, setDisplaySelected] = useState('info');
   return (
     <StyledWrapper>
@@ -32,7 +32,7 @@ export const SettingsPage = () => {
       </StyledButtonGroup>
       {
         displaySelected === 'info' ? 
-          <LoginForm /> : <RecordList />
+          <LoginForm userKey={userKey}/> : <RecordList />
       }
     </StyledWrapper>
   )

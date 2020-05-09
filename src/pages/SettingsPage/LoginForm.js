@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import firebase from 'firebase';
 import styled from 'styled-components';
 import { InputText } from 'primereact/inputtext';
 import { RadioButton } from 'primereact/radiobutton';
@@ -108,6 +109,20 @@ const interestItems = [
   {label: '運動', value: 'sports'},
   {label: '旅遊', value: 'travel'},
   {label: '音樂', value: 'music'},
+  {label: '3C', value: 'ccc'},
+  {label: '時尚', value: 'fashion'},
+  {label: '遊戲', value: 'game'},
+  {label: '文學', value: 'literature'},
+  {label: '時事', value: 'news'},
+  {label: '美食', value: 'food'},
+  {label: '攝影', value: 'photography'},
+  {label: '星座', value: 'star'},
+  {label: '投資', value: 'invest'},
+  {label: '電影', value: 'movie'},
+  {label: '美妝', value: 'cosmetic'},
+  {label: '汽車', value: 'car'},
+  {label: '科技', value: 'technology'},
+  {label: '網購', value: 'eShopping'},
   {label: '其他', value: 'other'},
 ];
 const jobItems = [
@@ -127,13 +142,14 @@ const tenureItems = [
   {label: '10年以上', value: 'over10'},
 ];
 const salaryItems = [
-  {label: '50萬', value: 'below500k'},
+  {label: '50萬以下', value: 'below500k'},
   {label: '50萬～1百萬', value: 'below1m'},
   {label: '1百萬以上', value: 'over1m'},
 ];
 
 
-export const LoginForm = () => {
+export const LoginForm = ({ userKey }) => {
+  console.log('userKey: ', userKey);
   const [name, setName] = useState();
   const [gender, setGender] = useState('male');
   const [age, setAge] = useState(20);
@@ -143,6 +159,24 @@ export const LoginForm = () => {
   const [job, setJob] = useState([]);
   const [tenure, setTenure] = useState([]);
   const [salary, setSalary] = useState([]);
+  const [info, setInfo] = useState({});
+  console.log('info: ', info);
+  // const getInfoInit = () => firebase.database().ref('/users/'+ userKey + '/settings').once('value').then((snapshot) => {
+  //   if (snapshot.val()) {
+  //     setInfo(snapshot.val())       
+  //   } 
+  // })
+  // useEffect(() => {
+  //   firebase.database().ref('/users/'+ userKey + '/settings').once('value').then((snapshot) => {
+  //     if (snapshot.val()) {
+  //       setInfo(snapshot.val())       
+  //     } 
+  //   }, [userKey]); 
+  // })
+ 
+  
+
+
   return (
     <div>
       <StyledForm>

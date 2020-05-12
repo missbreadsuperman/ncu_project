@@ -160,7 +160,6 @@ export const LoginForm = ({ userKey }) => {
   const [tenure, setTenure] = useState([]);
   const [salary, setSalary] = useState([]);
   const [info, setInfo] = useState({});
-  console.log('info: ', info);
   // const getInfoInit = () => firebase.database().ref('/users/'+ userKey + '/settings').once('value').then((snapshot) => {
   //   if (snapshot.val()) {
   //     setInfo(snapshot.val())       

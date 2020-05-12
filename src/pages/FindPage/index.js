@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import firebase from 'firebase';
 import styled from 'styled-components';
 import { Redirect } from 'react-router-dom';
@@ -6,6 +7,7 @@ import Button from '@material-ui/core/Button';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import numberIcon from '../../assets/icon_number.svg';
+import JPGFillFormImg from './fillform_img.jpg';
 
 const StyledWrapper = styled.div`
   padding: 85px 80px;
@@ -36,6 +38,7 @@ const StyledCard = styled.div`
   border: solid 3px #dea654;
   border-radius: 10px 10px 0 0;
   margin: 0 20px 20px 0;
+  cursor: pointer;
   .img {
     height: 191px;
     border-bottom: solid 3px #dea654;
@@ -75,11 +78,20 @@ const StyledCardDetail = styled.div`
     height: 18px !important;
     fill: #dea654 !important;
   }
-
-` 
+` ;
+const StyledFormImg = styled.img`
+  width: 100%;
+  height: 100%;
+  opacity: 0.5;
+  border-radius: 7px 7px 0 0;
+  &:hover {
+    opacity: 1;
+  }
+`
 export const FindPage = ({ userKey }) => {
   const [filter, setFilter] = useState('hot');
   const [forms, setForms] = useState([]);
+  const history = useHistory();
   useEffect(() => {
     firebase.database().ref('/forms').once('value').then((snapshot) => {
       if (snapshot.val()) {
@@ -91,9 +103,6 @@ export const FindPage = ({ userKey }) => {
       }
     })
   }, [])
-  if (userKey === undefined) {
-    return <Redirect to="/login" />;
-  }
   return (
     <StyledWrapper>
       <StyledButtonGroup>
@@ -102,23 +111,24 @@ export const FindPage = ({ userKey }) => {
       </StyledButtonGroup>
       <StyledCardWrapper>
         {
-          forms.map((card, index) => (
-            <StyledCard key={index}>
-              <div className="img"></div>
+          forms.map((form, index) => (
+            <StyledCard key={index} onClick={() => history.push('/form/' + form.key)} >
+              <div className="img">
+                <StyledFormImg src={JPGFillFormImg} alt=""/>
+              </div>
               <div className="card-body">
                 <div className="title">
-                    問卷 {index+1}
+                    {form.formData.title}
                 </div>
-                <StyledHeartIcon />
+                {/* <StyledHeartIcon /> */}
                 <StyledCardDetail>
                   <object type="image/svg+xml" data={numberIcon} style={{height: '18px', width: '12px'}}/>
-                  <p>問題數目</p>
+                  <p>問題數目  {form.formData.detail.length}</p>
                 </StyledCardDetail>
                 <StyledCardDetail>
                   <FavoriteIcon />
-                  <p>收藏人數</p>
+                  <p>已填人數</p>
                 </StyledCardDetail>
-               
               </div>
             </StyledCard>
           ))

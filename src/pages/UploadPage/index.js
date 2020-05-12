@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import firebase from 'firebase';
 import styled from 'styled-components';
 import update from 'immutability-helper';
+import $ from 'jquery';
 import { InputText } from 'primereact/inputtext';
 import { Checkbox } from 'primereact/checkbox';
 import { RadioButton } from 'primereact/radiobutton';
 import { InputNumber } from 'primereact/inputnumber';
 import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
+import { MultiSelect } from 'primereact/multiselect';
 
 const StyledWrapper = styled.div`
   padding: 40px 80px;
@@ -107,14 +109,19 @@ const StyleInterestWrapper = styled.div`
   border-radius: 5px;
   border: solid 2px #eaeaea; */
 `
-const StyledInterestItem = styled.div`
-  display: flex;
-  align-items: center;
-  .label {
-    margin-right: 20px;
-    font-size: 16px;
-    font-weight: normal;
+const StyledMultiSelect = styled(MultiSelect)`
+  width: 360px;
+  height: 30px !important;
+  border-radius: 10px !important;
+  border: solid 2px #eaeaea !important;
+  padding-left: 20px !important;
+  .p-multiselect-trigger, .p-multiselect-label {
+    background-color: unset !important;
   }
+  .p-multiselect-label-container {
+    height: 30px !important;
+  }
+  margin-left: 5px;
 `
 const StyledButton = styled(Button)`
   display: block;
@@ -126,6 +133,7 @@ const StyledButton = styled(Button)`
   /* margin-top: 50px !important; */
   font-size: 16px !important;
   font-weight: 500;
+  opacity: ${props => props.disabled === 'disabled' ? 0.5 : 1};
 `
 const StyledUrlCheck = styled.div`
   width: 30px;
@@ -133,6 +141,7 @@ const StyledUrlCheck = styled.div`
 const StyledIcon = styled.i`
   width: 20px;
   font-size: 30px !important;
+  color: red;
 `
 const conditions = ['性別', '年齡', '教育程度', '婚姻', '職業', '工作年資', '工作年薪', '興趣'];
 const conditionsValue = ['gender', 'age', 'education', 'marriage', 'job', 'tenure', 'salary', 'interest'];
@@ -150,11 +159,25 @@ const marriageItems = [
   {label: '已婚', value: 'married'},
 ];
 const interestItems = [
-  {label: '閱讀', value: 'reading', checked: false},
-  {label: '運動', value: 'sports', checked: false},
-  {label: '旅遊', value: 'travel', checked: false},
-  {label: '音樂', value: 'music', checked: false},
-  {label: '其他', value: 'other', checked: false},
+  {label: '閱讀', value: 'reading'},
+  {label: '運動', value: 'sports'},
+  {label: '旅遊', value: 'travel'},
+  {label: '音樂', value: 'music'},
+  {label: '3C', value: 'ccc'},
+  {label: '時尚', value: 'fashion'},
+  {label: '遊戲', value: 'game'},
+  {label: '文學', value: 'literature'},
+  {label: '時事', value: 'news'},
+  {label: '美食', value: 'food'},
+  {label: '攝影', value: 'photography'},
+  {label: '星座', value: 'star'},
+  {label: '投資', value: 'invest'},
+  {label: '電影', value: 'movie'},
+  {label: '美妝', value: 'cosmetic'},
+  {label: '汽車', value: 'car'},
+  {label: '科技', value: 'technology'},
+  {label: '網購', value: 'eShopping'},
+  {label: '其他', value: 'other'},
 ];
 const jobItems = [
   {label: '學生', value: 'student', },
@@ -177,7 +200,7 @@ const salaryItems = [
   {label: '50萬～1百萬', value: 'below1m'},
   {label: '1百萬以上', value: 'over1m'},
 ];
-const initInfo = {
+const initConditionDetail = {
   gender: 'male',
   age: [20,40],
   education: ['elementary', 'phd'],
@@ -187,39 +210,62 @@ const initInfo = {
   tenure: 'under1',
   salary: 'below500k',
 }
-export const UploadPage = ({ userKey }) => {
+export const UploadPage = ({ userKey = '-M6e6h9apEZQE1Aq44-6' }) => {
   const [formUrl,setFormUrl] = useState(null);
   const [urlChecked, setUrlChecked] = useState(null);
-  const [info, setInfo] = useState(initInfo);
+  const [conditionDetail, setConditionDetail] = useState(initConditionDetail);
   const [conditionChecked, setConditionChecked] = useState(conditionItems);
   const [condition, setCondition] = useState({});
-  const handleUrlCheck = async() => {
-    // setUrlChecked(true)
-    let response = await fetch('https://script.google.com/macros/s/AKfycbwd16MBvz6MrJw6280qhG8ivOx7HO4Yuvo18MsulJjI1Q-ufuM/exec?url='+ formUrl)
-    console.log('response: ', response);
+  const [checkPending, setCheckPending] = useState(false);
+  const [formData, setFormData] = useState(null);
+  const handleUrlCheck = () => {
+    if (formUrl && formUrl.length > 0) {
+      $.ajax({
+        url: 'https://script.google.com/macros/s/AKfycbyajhVUZwLbAN8aQfkIoyK5HZYW_10MAKjt4_hqPV_WVlsID0x-/exec?url=' + formUrl,
+        beforeSend: function(){
+          setCheckPending(true);
+        },
+        success: function(data) {
+          setUrlChecked(true);
+          setFormData(data);
+          setCheckPending(false);
+        },
+        error: function() { 
+          setUrlChecked(false);
+          setCheckPending(false);
+        }
+      });
+    } else setUrlChecked(false)
   }
-  const setInfoItem = (item, value) => {
-    setInfo(update(info, {[item]: {$set: value}}));
+  const setConditionDetailItem = (item, value) => {
+    setConditionDetail(update(conditionDetail, {[item]: {$set: value}}));
   }
   useEffect(() => {
     const checkedItem = conditionChecked.filter(item => item.checked);
     let condition_tmp = {}
     checkedItem.forEach(item => {
-      condition_tmp[item.value] = info[item.value];
+      condition_tmp[item.value] = conditionDetail[item.value];
     })
     setCondition(condition_tmp)
-  }, [conditionChecked, info]);
-  const handleFormSubmit = async() => {
-
+  }, [conditionChecked, conditionDetail]);
+  const handleFormSubmit = () => {
     firebase.database().ref('/forms').once('value').then((snapshot) => {
       if (!snapshot.val() || (snapshot && Object.values(snapshot.val()).filter(item => item.formUrl === formUrl)).length === 0){
-        const newPost = firebase.database().ref('/forms').push({formUrl: formUrl, conditions: condition});
-        const formKey = newPost.key; 
-        firebase.database().ref('/users/'+ userKey +'/uploadedForm').push({
-          formKey: formKey,
+        firebase.database().ref('/forms').push({
           formUrl: formUrl,
-          uploadTime: new Date(),
-        })
+          conditions: condition,
+          // formKey: formKey,
+          formData: formData,
+          uploadedTime: new Date(),
+          userKey: userKey
+        });
+        // const formKey = newPost.key; 
+        // firebase.database().ref('/users/'+ userKey +'/uploadedForm').push({
+        //   formKey: formKey,
+        //   formUrl: formUrl,
+        //   formData: formData,
+        //   uploadTime: new Date(),
+        // })
       }
     })
   }
@@ -236,9 +282,8 @@ export const UploadPage = ({ userKey }) => {
           {
             urlChecked === false &&  <StyledIcon className="pi pi-times" />
           }
-
         </StyledUrlCheck>
-        <StyledButton label="檢查" className="p-button-rounded" width={70} height={40} onClick={handleUrlCheck}/>
+        <StyledButton id="check-button" label={checkPending ? '...' : '檢查'} className="p-button-rounded" width={70} height={40} onClick={handleUrlCheck}/>
       </StyledStepRow>
       <StyledStepRow>
         <div className="label"><strong>Step2</strong> 選擇受眾條件：</div>
@@ -258,49 +303,42 @@ export const UploadPage = ({ userKey }) => {
         <div>
           <StyledFormRow>
             <StyledRadioGroup>
-              <RadioButton value="male" name="gender" onChange={(e) => setInfoItem('gender', e.value)} checked={info.gender === 'male'} />
+              <RadioButton value="male" name="gender" onChange={(e) => setConditionDetailItem('gender', e.value)} checked={conditionDetail.gender === 'male'} />
               <label>男</label>
-              <RadioButton value="female" name="gender" onChange={(e) => setInfoItem('gender', e.value)} checked={info.gender === 'female'} />
+              <RadioButton value="female" name="gender" onChange={(e) => setConditionDetailItem('gender', e.value)} checked={conditionDetail.gender === 'female'} />
               <label>女</label>
             </StyledRadioGroup>
           </StyledFormRow>
           <StyledFormRow>
-            <StyledInputNumber value={info.age[0]} onChange={(e) => setInfoItem('age', update(info.age, {0: {$set: e.value}}))} mode="decimal" min={0} max={100} />
+            <StyledInputNumber value={conditionDetail.age[0]} onChange={(e) => setConditionDetailItem('age', update(conditionDetail.age, {0: {$set: e.value}}))} mode="decimal" min={0} max={100} />
             <div className="middle-char">～</div>
-            <StyledInputNumber value={info.age[1]} onChange={(e) => setInfoItem('age', update(info.age, {1: {$set: e.value}}))} mode="decimal" min={0} max={100} />
+            <StyledInputNumber value={conditionDetail.age[1]} onChange={(e) => setConditionDetailItem('age', update(conditionDetail.age, {1: {$set: e.value}}))} mode="decimal" min={0} max={100} />
           </StyledFormRow>
           <StyledFormRow>
-            <StyledDropdown value={info.education[0]} options={educationItems} onChange={(e) => setInfoItem('education', update(info.education, {0: {$set: e.value}}))} />
+            <StyledDropdown value={conditionDetail.education[0]} options={educationItems} onChange={(e) => setConditionDetailItem('education', update(conditionDetail.education, {0: {$set: e.value}}))} />
             <div className="middle-char">至</div>
-            <StyledDropdown value={info.education[1]} options={educationItems} onChange={(e) => setInfoItem('education', update(info.education, {1: {$set: e.value}}))} />
+            <StyledDropdown value={conditionDetail.education[1]} options={educationItems} onChange={(e) => setConditionDetailItem('education', update(conditionDetail.education, {1: {$set: e.value}}))} />
           </StyledFormRow>
           <StyledFormRow>
-            <StyledDropdown value={info.marriage} options={marriageItems} onChange={(e) => setInfoItem('marriage', e.value)} />
+            <StyledDropdown value={conditionDetail.marriage} options={marriageItems} onChange={(e) => setConditionDetailItem('marriage', e.value)} />
           </StyledFormRow>
           <StyledFormRow>
-            <StyledDropdown value={info.job} options={jobItems} onChange={(e) => setInfoItem('job', e.value)} />
+            <StyledDropdown value={conditionDetail.job} options={jobItems} onChange={(e) => setConditionDetailItem('job', e.value)} />
           </StyledFormRow>
           <StyledFormRow>
-            <StyledDropdown value={info.tenure} options={tenureItems} onChange={(e) => setInfoItem('tenure', e.value)} />
+            <StyledDropdown value={conditionDetail.tenure} options={tenureItems} onChange={(e) => setConditionDetailItem('tenure', e.value)} />
           </StyledFormRow>
           <StyledFormRow>
-            <StyledDropdown value={info.salary} options={salaryItems} onChange={(e) => setInfoItem('salary', e.value)} />
+            <StyledDropdown value={conditionDetail.salary} options={salaryItems} onChange={(e) => setConditionDetailItem('salary', e.value)} />
           </StyledFormRow>
           <StyledFormRow>
             <StyleInterestWrapper>
-              {
-                info.interest.map((item, index) => (
-                  <StyledInterestItem key={index}>
-                    <Checkbox checked={item.checked} onChange={e => setInfoItem('interest', update(info.interest, {[index]: {checked: {$set: e.checked}}}))} />
-                    <div className="label">{item.label}</div>
-                  </StyledInterestItem>
-                ))
-              }
+              <StyledMultiSelect value={conditionDetail.interest} options={interestItems} onChange={e => setConditionDetailItem('interest', e.value)} />
             </StyleInterestWrapper>
           </StyledFormRow>
         </div>
       </StyledFormWrapper>
-      <StyledButton label="送出" className="p-button-rounded" onClick={handleFormSubmit} />
+      <StyledButton label="送出" className="p-button-rounded" onClick={handleFormSubmit} disabled={!urlChecked && 'disabled' }/>
     </StyledWrapper>
   )
 }

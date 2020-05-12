@@ -14,6 +14,7 @@ import { UploadPage } from './UploadPage';
 import { SettingsPage } from './SettingsPage';
 import { AboutPage } from './AboutPage';
 import { LuckyPage } from './LuckyPage';
+import { FormPage } from './FormPage';
 
 const StyledWrapper = styled.div`
   display: grid;
@@ -62,6 +63,9 @@ export const HomePage = () => {
           <LeftNavbar userProfile={userProfile}/>
           <PrivateRoute exact path="/">
             <FindPage userKey={userKey} />
+          </PrivateRoute>
+          <PrivateRoute path="/form/:id">
+            <FormPage userKey={userKey} />
           </PrivateRoute>
           <PrivateRoute path="/upload">
             <UploadPage userKey={userKey} />

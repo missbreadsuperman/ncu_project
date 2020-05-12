@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Redirect } from 'react-router-dom'
 import styled from 'styled-components';
 import firebase from 'firebase';
@@ -35,7 +35,6 @@ const StyledHint = styled.div`
 `
 export const LoginPage = ({ userKey, setUserKey, users, user, setUser, setUserProfile }) => { 
   const path = '/users';
-
   function pushUser(response) {
     firebase.database().ref(path).push(response);
     setUser(response);

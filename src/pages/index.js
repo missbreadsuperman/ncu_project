@@ -10,6 +10,7 @@ import firebase from 'firebase';
 import { FindPage } from './FindPage';
 import { LoginPage } from './LoginPage';
 import { LeftNavbar } from './LeftNavbar';
+import { TopNavbar } from './TopNavbar';
 import { UploadPage } from './UploadPage';
 import { SettingsPage } from './SettingsPage';
 import { AboutPage } from './AboutPage';
@@ -17,15 +18,21 @@ import { LuckyPage } from './LuckyPage';
 import { FormPage } from './FormPage';
 
 const StyledWrapper = styled.div`
-  display: grid;
-  grid-template-columns: 279px auto;
-  grid-template-rows: 100vh;
+  @media (min-width: 415px) {
+    display: grid;
+    grid-template-columns: 279px auto;
+    grid-template-rows: 100vh;
+  }
+  @media (max-width: 414px) {
+    display: flex;
+  }
 `
 
 export const HomePage = () => {
   const [userKey, setUserKey] = useState();
   const [users, setUsers] = useState([]);
   const [user, setUser] = useState(null);
+  // const [user, setUser] = useState({settings: 0});
   const [userProfile, setUserProfile] = useState(null);
 
   useEffect(() => {
@@ -60,7 +67,8 @@ export const HomePage = () => {
            <LoginPage userKey={userKey} setUserKey={setUserKey} users={users} setUsers={setUsers} user={user} setUser={setUser} setUserProfile={setUserProfile}/>
          </Route>
         <StyledWrapper>
-          <LeftNavbar userProfile={userProfile}/>
+          <LeftNavbar userProfile={userProfile} />
+          <TopNavbar />
           <PrivateRoute exact path="/">
             <FindPage userKey={userKey} />
           </PrivateRoute>

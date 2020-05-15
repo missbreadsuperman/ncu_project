@@ -24,12 +24,15 @@ const StyledLabel = styled.div`
   margin-bottom: 6px;
 `
 const StyledInput = styled(InputText)`
-  width: 360px;
   height: 40px;
   border-radius: 10px !important;
   border: solid 2px #eaeaea !important;
   padding-left: 20px !important;
   margin-left: 5px;
+  width: 360px;
+  @media (max-width: 414px) {
+    width: 85%;
+  }
 `
 const StyledDropdown = styled(Dropdown)`
   width: 143px;
@@ -41,6 +44,9 @@ const StyledDropdown = styled(Dropdown)`
     background-color: unset !important;
   }
   margin-left: 5px;
+  @media (max-width: 414px) {
+    width: 85%;
+  }
 `
 const StyledMultiSelect = styled(MultiSelect)`
   width: 360px;
@@ -55,6 +61,9 @@ const StyledMultiSelect = styled(MultiSelect)`
     height: 30px !important;
   }
   margin-left: 5px;
+  @media (max-width: 414px) {
+    width: 85%;
+  }
 `
 const StyledInputNumber = styled(InputNumber)`
   input {
@@ -65,6 +74,9 @@ const StyledInputNumber = styled(InputNumber)`
     text-align: center;
     margin-top: 2px;
     margin-left: 5px;
+    @media (max-width: 414px) {
+      width: 85%;
+    }
   }
 `
 const StyledRadioGroup = styled.div`
@@ -77,9 +89,15 @@ const StyledRadioGroup = styled.div`
   align-items: center;
   margin-top: 8px;
   justify-content: space-between;
+  @media (max-width: 414px) {
+    width: 85%;
+  }
 `
 const StyledFormRow = styled.div`
   display: flex;
+  @media (max-width: 414px) {
+    flex-direction: column;
+  }
 `
 const StyledButton = styled(Button)`
   width: 135px;
@@ -89,6 +107,9 @@ const StyledButton = styled(Button)`
   margin-top: 50px !important;
   font-size: 16px !important;
   font-weight: 500;
+  @media (max-width: 414px) {
+    margin: 30px 0 !important;
+  }
 `
 
 

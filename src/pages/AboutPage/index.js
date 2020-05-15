@@ -10,6 +10,11 @@ import SVGChat2 from './chat2.svg';
 const StyledWrapper = styled.div`
   position: relative;
   padding: 81px 80px;
+  @media (max-width: 414px) {
+    padding: 80px 20px;
+    max-width: 100vw;
+    overflow-x: scroll;
+  }
 `
 const StyledTitle = styled.div`
   font-size: 20px;

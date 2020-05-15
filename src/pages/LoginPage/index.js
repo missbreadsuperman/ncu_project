@@ -15,12 +15,20 @@ const StyledIllustration = styled.img`
   position: fixed;
   left: -97px;
   z-index: -1;
+  @media (max-width: 414px) {
+    left: -187%;
+  }
 `
 const StyledRightInfo = styled.div`
   position: absolute;
   right: 0;
   padding: ${props => props.loginSuccess ? '76px 18%' : '138px 18%'};
   text-align: center;
+  @media (max-width: 414px) {
+    padding: ${props => props.loginSuccess ? '40px 18%' : '138px 18%'};
+    width: 100vw;
+    height: 100vh;
+  } 
 `
 const StyledTitle = styled.div`
   color: #333;
@@ -32,6 +40,10 @@ const StyledHint = styled.div`
   color: #acacac;
   font-size: 20px;
   margin-bottom: 50px;
+  @media (max-width: 414px) {
+    font-size: 14px;
+  margin-bottom: 20px;
+  } 
 `
 export const LoginPage = ({ userKey, setUserKey, users, user, setUser, setUserProfile }) => { 
   const path = '/users';
@@ -74,7 +86,6 @@ export const LoginPage = ({ userKey, setUserKey, users, user, setUser, setUserPr
             fields="name,email,picture"
             callback={responseFacebook}
             icon="fa-facebook"
-            onClick={() => setUser(1)}
           />
         }
         {

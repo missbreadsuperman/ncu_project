@@ -16,6 +16,10 @@ const StyledListWrapper = styled.div`
   overflow-y: scroll;
   border: solid 1px #eaeaea;
   height: ${props => props.height}px;
+  @media (max-width: 414px) {
+    max-width: 90vw;
+    overflow: scroll;
+  }
   `
 const StyledListRow = styled.div`
   display: grid;
@@ -25,9 +29,14 @@ const StyledListRow = styled.div`
   font-size: 16px;
   font-weight: ${props => props.fontWeight === 'bold' ? 'bold' : 'normal'};
   align-items: center;
-  background-color: ${props => props.bgColor};
   & > div:first-of-type {
     padding-left: 20px;
+  }
+  & > a, div {
+    background-color: ${props => props.bgColor};
+    height: 100%;
+    display: flex;
+    align-items: center;
   }
 `
 const formRecords = [

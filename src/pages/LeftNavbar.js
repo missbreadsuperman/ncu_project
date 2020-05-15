@@ -16,6 +16,9 @@ const StyledLeftPanel = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  @media (max-width: 414px) {
+    display: none;
+  }
 `
 const StyledProfile = styled.div`
   width: 120px;

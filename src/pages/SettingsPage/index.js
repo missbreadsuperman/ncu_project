@@ -7,6 +7,9 @@ import { RecordList } from './RecordList';
 const StyledWrapper = styled.div`
   position: relative;
   padding: 85px 80px;
+  @media (max-width: 414px) {
+    padding: 80px 20px;
+  }
 `
 const StyledButtonGroup = styled.div`
   display: flex;
@@ -20,6 +23,9 @@ const StyledButton = styled(Button)`
   font-size: 16px !important;
   margin-right: 16px !important;  
   border: solid 2px #dea654 !important;
+  @media (max-width: 414px) {
+    width: 35vw;
+  }
 `
 
 export const SettingsPage = ({ userKey }) => { 

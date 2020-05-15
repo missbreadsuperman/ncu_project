@@ -15,6 +15,9 @@ const StyledWrapper = styled.div`
   padding: 40px 80px;
   max-height: 100vh;
   overflow-y: scroll;
+  @media (max-width: 414px) {
+    padding: 80px 20px;
+  }
 `
 const StyledTitle = styled.div`
   font-size: 20px;
@@ -28,19 +31,30 @@ const StyledStepRow = styled.div`
   align-items: center;
   color: #333;
   margin-bottom: 10px;
+  @media (max-width: 414px) {
+    flex-direction: column;
+    height: unset;
+  }
   .label {
     font-size: 16px;
     margin-right: 20px;
+    @media (max-width: 414px) {
+      font-size: 14px;
+      align-self: flex-start;
+    }
     strong {
       font-weight: bold;
     }
   }
 `
 const StyledHintText = styled.div`
-  font-size: 15px;
+  font-size: 12px;
   color: #333;
   opacity: 50%;
   margin-left: 147px;
+  @media (max-width: 414px) {
+    margin-left: 27px;
+  }
 `
 const StyledInput = styled(InputText)`
   width: 582px;
@@ -48,6 +62,10 @@ const StyledInput = styled(InputText)`
   border-radius: 10px !important;
   border: solid 2px #eaeaea;
   font-size: 11px !important;
+  @media (max-width: 414px) {
+    width: 80vw;
+    margin: 10px 0;
+  }
 `
 const StyledFormWrapper = styled.div`
   display: grid;
@@ -58,6 +76,10 @@ const StyledFormWrapper = styled.div`
   color: #333;
   margin-left: 147px;
   margin-bottom: 20px;
+  @media (max-width: 414px) {
+    grid-template-columns: 117px auto;
+    margin-left: unset;
+  }
 `
 const StyledFormRow = styled.div`
   display: flex;

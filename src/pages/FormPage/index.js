@@ -3,9 +3,11 @@ import {
   useParams
 } from 'react-router-dom';
 import firebase from 'firebase';
+import $ from 'jquery';
 import styled from 'styled-components';
 import { get } from 'lodash';
 import { CardContent } from './CardContent';
+import { Button } from 'primereact/button';
 
 
 const StyledWrapper = styled.div`
@@ -43,28 +45,58 @@ export const FormPage = ({ userKey }) => {
   console.log('answerData: ', answerData);
   
   const handleSubmitClick = () => {
-    // fetch('https://script.google.com/macros/s/AKfycbytdg5_3I2clOXaX1gONvsZSkTomIStWR_o7nbtdRdskexi4byy/exec?data+'+JSON.stringify(body), {
-    //   method: 'POST',
-    //   // body: data,
-    //   headers: {
-    //     'Content-Type': 'text/plain;charset=utf-8',
-    //   }
+    // fetch('https://script.google.com/macros/s/AKfycbytdg5_3I2clOXaX1gONvsZSkTomIStWR_o7nbtdRdskexi4byy/exec?answers=+'+JSON.stringify(answerData), {
+    //   // method: 'POST',
+    //   // headers: {
+    //   //   'Content-Type': 'text/plain;charset=utf-8',
+    //   // }
+    //   'method' : 'GET',
+    //   'contentType': 'application/json',
+    //   // Convert the JavaScript object to a JSON string.
+    //   // 'payload' : JSON.stringify({answers: answerData})
     // }).then(response => {
     //   console.log('success:', response);
     // }).catch(err => {
     //   console.log('Error:' + err);
     // });
+    $.ajax({
+      url: 'https://script.google.com/macros/s/AKfycbytdg5_3I2clOXaX1gONvsZSkTomIStWR_o7nbtdRdskexi4byy/exec?answers=' + JSON.stringify(answerData),
+      beforeSend: function(){
+      },
+      success: function(data) {
+        console.log('handleSubmitClick -> data', data)
+
+      },
+      error: function(err) { 
+        console.log('handleSubmitClick -> err', err)
+      }
+    // });
+    })
   }
   useEffect(() => {
     if (formKey) {
       firebase.database().ref('/forms/'+ formKey).once('value').then((snapshot) => {
-        setFormData(snapshot.val().formData);
-        const initAnswer = snapshot.val().formData.detail.map(item => ({index: item.index, type: item.questionType, answer: ''}));
+        const formDataTmp = snapshot.val().formData;
+        setFormData(formDataTmp);
+        let initAnswer = snapshot.val().formData.detail.map(item => ({index: item.index, type: item.questionType, answer: ''}));
+        formDataTmp.detail.forEach((item, i) => {
+          console.log('FormPage -> item', item)
+          if (item.questionType === 'GRID') {
+            initAnswer[i].answer = Array(item.questionInfo.rows.length).fill('')
+          } else if (item.questionType === 'CHECKBOX_GRID') {
+            initAnswer[i].answer = Array(item.questionInfo.rows.length).fill([])
+          } else if (item.questionType === 'DATETIME') {
+            initAnswer[i].answer = new Date();
+          } else if (item.questionType === 'DURATION') {
+            initAnswer[i].answer = [0,0,0];
+          } else if (item.questionType === 'TIME') {
+            initAnswer[i].answer = [0,0];
+          }
+        })
         setAnswerData(initAnswer);
       });
     }
   }, [formKey]);
-
 
   return (
     <StyledWrapper>
@@ -76,7 +108,7 @@ export const FormPage = ({ userKey }) => {
         </StyledCard>
       )
       )}
-      <button onClick={handleSubmitClick}>送出</button>
+      <Button onClick={handleSubmitClick} label="送出"></Button>
     </StyledWrapper>
   )
   

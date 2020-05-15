@@ -1,0 +1,74 @@
+@keyframes circle{
+  from {transform: rotate(0)}
+  to {transform: rotate(720deg)}
+}
+.turntable{
+  height: 400px;
+  width: 400px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.content{
+  height: 400px;
+  width: 400px;
+  position: relative;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  overflow: hidden;
+  animation: circle 3s infinite;
+  -webkit-animation:circle 3s infinite; /*Safari and Chrome*/
+}
+.box {
+  height: 400px;
+  width: 400px;
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+.item{
+  position: absolute;
+  height: 200px;
+  width: 200px;
+  left: 50%;
+  top: 0;
+  color: #fff;
+}
+.info{
+  position: absolute;
+  left: 5%;
+  top: 50%;
+}
+.point{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 30px;
+  height: 30px;
+  background-color: #ffd81a;
+  border: 2px solid #ed1212;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+}
+.arrow{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: 100px;
+  width: 16px;
+  transform: translate(-50%, -50%);
+  background-color: #ffd81a;
+  margin: -50px auto 0;
+  box-shadow: 0px 0px 18px #7a7070;
+}
+.arrow::after{
+  content: ' ';
+  position: absolute;
+  border-top: 8px solid transparent;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 20px solid #ffd81a;
+  top: -28px;
+  left: 0px;
+
+}

@@ -13,10 +13,19 @@ const StyledWrapper = styled.div`
   padding: 85px 80px;
   max-height: 100vh;
   overflow-y: scroll;
+  @media (max-width: 414px) {
+    padding: 80px 20px;
+    width: 100%;
+    font-weight: 500;
+    position: fixed;
+  }
 `
 const StyledButtonGroup = styled.div`
   display: flex;
   margin-bottom: 55px;
+  @media (max-width: 414px) {
+    margin-bottom: 20px;
+  }
 `
 const StyledButton = styled(Button)`
   width: 135px;

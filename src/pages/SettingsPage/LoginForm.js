@@ -28,6 +28,9 @@ const StyledInput = styled(InputText)`
   border: solid 2px #eaeaea !important;
   padding-left: 20px !important;
   margin-left: 5px;
+  @media (max-width: 414px) {
+    width: 80vw !important;
+  }
 `
 const StyledDropdown = styled(Dropdown)`
   width: 143px;
@@ -39,6 +42,9 @@ const StyledDropdown = styled(Dropdown)`
     background-color: unset !important;
   }
   margin-left: 5px;
+  @media (max-width: 414px) {
+    width: 36vw !important;
+  }
 `
 const StyledMultiSelect = styled(MultiSelect)`
   width: 360px;
@@ -53,6 +59,9 @@ const StyledMultiSelect = styled(MultiSelect)`
     height: 30px !important;
   }
   margin-left: 5px;
+  @media (max-width: 414px) {
+    width: 80vw !important;
+  }
 `
 const StyledInputNumber = styled(InputNumber)`
   input {
@@ -63,6 +72,9 @@ const StyledInputNumber = styled(InputNumber)`
     text-align: center;
     margin-top: 2px;
     margin-left: 5px;
+    @media (max-width: 414px) {
+      width: 36vw;
+    }
   }
 `
 const StyledRadioGroup = styled.div`
@@ -89,6 +101,9 @@ const StyledButton = styled(Button)`
   font-weight: 500;
   position: relative;
   left: 90px;
+  @media (max-width: 414px) {
+    width: 39vw !important;
+  }
 `
 
 

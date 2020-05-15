@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import update from 'immutability-helper';
 import { get } from 'lodash';
@@ -75,69 +75,10 @@ const StyledTimeInput = styled(InputNumber)`
     margin: 0 5px;
   }
 `
-const body = {
-  answers: [
-    {
-      index: 0,
-      type: 'TEXT',
-      answer: 'answer for text'
-    },
-    {
-      index: 1,
-      type: 'PARAGRAPH_TEXT',
-      answer: 'answer for text\n p1 \n p2 \n p3 \n 4 paragraphs'
-    },
-    {
-      index: 2,
-      type: 'MULTIPLE_CHOICE',
-      answer: '選項 2'
-    },
-    {
-      index: 3,
-      type: 'CHECKBOX',
-      answer: ['選項 1', '選項 2']
-    },
-    {
-      index: 4,
-      type: 'LIST',
-      answer: '選項 2'
-    },
-    {
-      index: 5,
-      type: 'SCALE',
-      answer: 4
-    },
-    {
-      index: 6,
-      type: 'GRID',
-      answer: ['第 2 欄', '第 1 欄', '第 1 欄', '第 2 欄']
-    },
-    {
-      index: 7,
-      type: 'CHECKBOX_GRID',
-      answer: [['第 1 欄', '第 2 欄'],[ '第 1 欄'], ['第 1 欄', '第 2 欄'], ['第 2 欄']]
-    },
-    {
-      index: 8,
-      type: 'DATE_TIME',
-      // month -1
-      answer: new Date(Date.UTC(2020, 4 , 15, 3, 12))
-    },
-    {
-      index: 9,
-      type: 'DURATION',
-      answer: [4,0,41]
-    },
-    {
-      index: 10,
-      type: 'TIME',
-      answer: [17, 31]
-    },
-  ]
-}
 
 export const CardContent = ({ type, detail, questionIndex, answerData, setAnswerData }) => {
-  console.log('answerData: ', answerData);
+  console.log('CardContent -> answerData', answerData)
+  const [dateTime, setDateTime] = useState({date: new Date(), hour: new Date().getHours(), minute: new Date().getMinutes()})
   const handleCheckboxChange = ({ value, checked}) => {
     if (checked) {
       const tmp = get(answerData, [questionIndex, 'answer'], []);
@@ -150,6 +91,26 @@ export const CardContent = ({ type, detail, questionIndex, answerData, setAnswer
       setAnswerData(update(answerData, {[questionIndex]: {answer: { $splice: [[index, 1]] }}}))
     }
   }
+  const handleGridChange = ({ value, row }) => {
+    const tmp = update(answerData, {[questionIndex]: {answer: {[row]: {$set: value}}}})
+    setAnswerData(tmp)
+  }
+  const handleGridCheckboxChange = ({ value, row, checked }) => {
+    if (checked) {
+      const tmp =  update(answerData, {[questionIndex]: {answer: {[row]: {$push: [value]}}}})
+      setAnswerData(tmp)
+    } else {
+      const index = get(answerData, [questionIndex, 'answer', row], []).indexOf(value);
+      setAnswerData(update(answerData, {[questionIndex]: {answer: {[row]: { $splice: [[index, 1]] }}}}))
+    }
+  }
+  useEffect(() => {
+    if (answerData[questionIndex]) {
+      const dateTimeTmp =  new Date(dateTime.date.getFullYear(), dateTime.date.getMonth() , dateTime.date.getDate(), dateTime.hour, dateTime.minute)
+      setAnswerData(update(answerData, {[questionIndex]: {answer: {$set: dateTimeTmp}}}))
+    }
+  }, [dateTime]);
+  
   return ( 
     <div>
       {
@@ -232,7 +193,7 @@ export const CardContent = ({ type, detail, questionIndex, answerData, setAnswer
                 <StyledRowFlexItem>
                   {detail.columns.map((col, j) => (
                     <div key={j} style={{flexBasis: 100 / detail.columns.length +'%'}}>
-                      <RadioButton inputId={'choice'+j} name="choice" value={col} onChange={(e) => console.log({city: e.value})} checked={false} />
+                      <RadioButton inputId={'choice'+j} name="choice" value={col} onChange={(e) => handleGridChange({value: e.value, row: i })} checked={get(answerData, [questionIndex, 'answer', i], ['']) === col} />
                     </div>
                   ))}
                 </StyledRowFlexItem> 
@@ -254,7 +215,7 @@ export const CardContent = ({ type, detail, questionIndex, answerData, setAnswer
                 <StyledRowFlexItem>
                   {detail.columns.map((col, j) => (
                     <div key={j} style={{flexBasis: 100 / detail.columns.length +'%'}}>
-                      <Checkbox inputId={'choice'+j} name="choice" value={col} onChange={(e) => console.log({city: e.value})} checked={get(answerData, [questionIndex, 'answer'], '').indexOf(col)>-1} />
+                      <Checkbox inputId={'choice'+j} name="choice" value={col} onChange={(e) => handleGridCheckboxChange({value: e.value, row: i, checked: e.checked })} checked={get(answerData, [questionIndex, 'answer', i], ['']).indexOf(col) > -1} />
                     </div>
                   ))}
                 </StyledRowFlexItem> 
@@ -268,12 +229,11 @@ export const CardContent = ({ type, detail, questionIndex, answerData, setAnswer
           <StyledGridWrapper gridTemplateCols='150px 200px' gridTemplateRows="20px 48px" textAlign="start">
             <StyledLabel>日期</StyledLabel>
             <StyledLabel>時間</StyledLabel>
-            <div><StyledCalendar value={new Date()} onChange={(e) => console.log({date3: e.value})} showIcon={true} /></div>
+            <div><StyledCalendar value={dateTime.date} onChange={(e) => setDateTime(update(dateTime, {date: {$set: e.value}}))} showIcon={true} /></div>
             <StyledRowFlexItem>
-              <StyledDropdown value="am" options={[{label: '上午', value: 'am'}, {label: '下午', value: 'pm'}]} onChange={() => console.log('change')} lineHeight={33} minWidth={80} />
-              <StyledTimeInput value={11} onChange={(e) => console.log({value20: e.value})} mode="decimal" min={0} max={11} />
+              <StyledTimeInput value={dateTime.hour} onChange={(e) => setDateTime(update(dateTime, {hour: {$set: e.value}}))} mode="decimal" min={0} max={23} />
                 :
-              <StyledTimeInput value={22} onChange={(e) => console.log({value20: e.value})} mode="decimal" min={0} max={59} />
+              <StyledTimeInput value={dateTime.minute} onChange={(e) => setDateTime(update(dateTime, {minute: {$set: e.value}}))} mode="decimal" min={0} max={59} />
             </StyledRowFlexItem>
           </StyledGridWrapper>
         )
@@ -286,9 +246,9 @@ export const CardContent = ({ type, detail, questionIndex, answerData, setAnswer
             <StyledLabel>分</StyledLabel>
             <div />
             <StyledLabel>秒</StyledLabel>
-            <div><StyledTimeInput value={11} onChange={(e) => console.log({value20: e.value})} mode="decimal" min={0} /></div><div>:</div>
-            <div><StyledTimeInput value={11} onChange={(e) => console.log({value20: e.value})} mode="decimal" min={0} max={59} /></div><div>:</div>
-            <div><StyledTimeInput value={11} onChange={(e) => console.log({value20: e.value})} mode="decimal" min={0} max={59} /></div>
+            <div><StyledTimeInput value={get(answerData, [questionIndex, 'answer', 0], [0])} onChange={(e) => setAnswerData(update(answerData, {[questionIndex]: {answer: {0: {$set: e.value}}}}))} mode="decimal" min={0} max={72} /></div><div>:</div>
+            <div><StyledTimeInput value={get(answerData, [questionIndex, 'answer', 1], [0])} onChange={(e) => setAnswerData(update(answerData, {[questionIndex]: {answer: {1: {$set: e.value}}}}))} mode="decimal" min={0} max={59} /></div><div>:</div>
+            <div><StyledTimeInput value={get(answerData, [questionIndex, 'answer', 2], [0])} onChange={(e) => setAnswerData(update(answerData, {[questionIndex]: {answer: {2: {$set: e.value}}}}))} mode="decimal" min={0} max={59} /></div>
           </StyledGridWrapper>
         )
       }
@@ -298,10 +258,9 @@ export const CardContent = ({ type, detail, questionIndex, answerData, setAnswer
             <StyledGridWrapper gridTemplateCols="auto" gridTemplateRows="24px auto">
               <StyledLabel>時間</StyledLabel>
               <StyledRowFlexItem>
-                <StyledDropdown value="am" options={[{label: '上午', value: 'am'}, {label: '下午', value: 'pm'}]} onChange={() => console.log('change')} lineHeight={33} minWidth={80} />
-                <StyledTimeInput value={11} onChange={(e) => console.log({value20: e.value})} mode="decimal" min={0} max={11} />
+                <StyledTimeInput value={get(answerData, [questionIndex, 'answer', 0], [0])} onChange={(e) => setAnswerData(update(answerData, {[questionIndex]: {answer: {0: {$set: e.value}}}}))} mode="decimal" min={0} max={23} />
                   :
-                <StyledTimeInput value={22} onChange={(e) => console.log({value20: e.value})} mode="decimal" min={0} max={59} />
+                <StyledTimeInput value={get(answerData, [questionIndex, 'answer', 1], [0])} onChange={(e) => setAnswerData(update(answerData, {[questionIndex]: {answer: {1: {$set: e.value}}}}))} mode="decimal" min={0} max={59} />
               </StyledRowFlexItem>
             </StyledGridWrapper>
           </div>
